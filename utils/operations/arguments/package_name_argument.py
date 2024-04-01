@@ -6,7 +6,7 @@ from .base_argument import *
 class PackageNameArgument(BaseArgument):
     def __init__(self):
         self.names = ["package"]
-        self.help = "Path to package file (.uiw file)"
+        self.help = "Path to package file (.uip file)"
 
     def type(self, file_path: str) -> str:
         if not os.path.exists(file_path):

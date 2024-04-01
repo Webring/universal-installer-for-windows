@@ -3,6 +3,8 @@ from typing import Any
 from .str import parse_str_section
 from .list import parse_list_section
 from .dict import parse_dict_section
+from .dict_in_dict import parse_dict_in_dict_section
+from .table import TableParser
 
 DEFAULT_PARSER = parse_list_section
 
@@ -11,6 +13,8 @@ SECTIONS_PARSERS = {
     "archives": parse_list_section,
     "dir": parse_dict_section,
     "icons": parse_list_section,
+    "files": TableParser(2),
+    "registry": parse_dict_in_dict_section,
 }
 
 

@@ -1,6 +1,7 @@
 def parse_dict_section(cleared_lines):
-    data = ""
+    data = dict()
     for line in cleared_lines:
-        if isinstance(line, str):
-            data = line
+        if "=" in line:
+            key, value = line.split("=", 1)
+            data[key] = value.strip()
     return data

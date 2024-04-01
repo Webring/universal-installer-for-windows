@@ -1,7 +1,9 @@
-from section_parsers import parse_section
+from loguru import logger
+
+from .section_parsers import parse_section
 
 
-def parse_uip_script_file(file_path: str) -> dict:  # ToDo  Написать парсер скриптов
+def parse_uip_script_file(file_path: str) -> dict:
     data = dict()
     current_section_name = None
     current_section_cleared_lines = list()
@@ -19,14 +21,11 @@ def parse_uip_script_file(file_path: str) -> dict:  # ToDo  Написать п�
                     data[current_section_name] = parse_section(current_section_name, current_section_cleared_lines)
 
                 current_section_name = command[1:-1]
+                current_section_cleared_lines.clear()
 
                 if current_section_name == "end":
                     break
             else:
-                current_section_cleared_lines.append(command.split("=", 1) if "=" in command else command)
-
+                current_section_cleared_lines.append(command)
+    logger.debug(data)
     return data
-
-
-if __name__ == '__main__':
-    print(parse_uip_script_file("../../dev/packages/test.uip"))
