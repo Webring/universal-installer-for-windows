@@ -3,7 +3,7 @@ from loguru import logger
 from .section_parsers import parse_section
 
 
-def parse_uip_script_file(file_path: str) -> dict:
+def parse_script_file(file_path: str) -> dict:
     data = dict()
     current_section_name = None
     current_section_cleared_lines = list()

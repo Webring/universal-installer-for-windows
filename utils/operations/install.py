@@ -1,9 +1,11 @@
+import os.path
+
 from loguru import logger
 
 from .base_operation import BaseOperation
 from .arguments.package_name_argument import PackageNameArgument
 from ..functions.install_package import install_package
-from ..uip.parser import parse_uip_script_file
+from ..uip.parser import parse_script_file
 
 
 class InstallOperation(BaseOperation):
@@ -15,8 +17,9 @@ class InstallOperation(BaseOperation):
 
     def execute(self, arguments: dict) -> None:
         logger.info("Start installing package on your computer")
-        package_name = arguments["package"]
-        logger.info(f"Opening file '{package_name}'")
+        package_path = arguments["package"]
+        logger.info(f"Opening file '{package_path}'")
 
-        data = parse_uip_script_file(package_name)
+        data = parse_script_file(package_path)
+        data["path_to_package"] = os.path.abspath(package_path)
         install_package(data)
