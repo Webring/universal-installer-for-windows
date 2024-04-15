@@ -1,12 +1,19 @@
+import os
+
 from loguru import logger
 
 from .section_parsers import parse_section
 
 
 def parse_script_file(file_path: str) -> dict:
-    data = dict()
+    data = {"parse_success": False}
     current_section_name = None
     current_section_cleared_lines = list()
+
+    if not os.path.exists(file_path) or not os.path.isfile(file_path):
+        logger.critical(f"File {file_path} does not exist or is not a file.")
+        return data
+
     with open(file_path, mode="r", encoding="utf-8") as file:
         lines = file.readlines()
         for line in lines:
@@ -28,4 +35,5 @@ def parse_script_file(file_path: str) -> dict:
             else:
                 current_section_cleared_lines.append(command)
     logger.debug(data)
+    data["parse_success"] = True
     return data

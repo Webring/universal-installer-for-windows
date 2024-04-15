@@ -17,7 +17,7 @@ import utils.operations as ops
 def main():
     parser = argparse.ArgumentParser(description="Simple package installer for windows")
     parser.add_argument("-lf", "--logfile", help="logfile name", dest="logfile", default='')
-    parser.add_argument("-dl", "--debug-level", help="logging level", dest="debug_level",
+    parser.add_argument("-ll", "--loglevel", help="logging level", dest="debug_level",
                         choices=['debug', 'info', 'warning', 'error', 'critical'], default='info')
     operations_parser = parser.add_subparsers(title="Operations", dest="operation")
 
@@ -31,11 +31,10 @@ def main():
                                               help=operation.help
                                               )
 
-        for argument in operation.arguments:  # ToDo добавить адаптивность
-            option.add_argument(*argument.names,
-                                help=argument.help,
-                                type=argument.type
-                                )
+        for argument in operation.arguments:
+            argument_kwargs = argument.__dict__
+            argument_names = argument_kwargs.pop("names")
+            option.add_argument(*argument_names, **argument_kwargs)
 
         option.set_defaults(func=operation.execute)
 
