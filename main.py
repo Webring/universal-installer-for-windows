@@ -1,3 +1,4 @@
+import ctypes
 import sys
 
 from loguru import logger
@@ -6,12 +7,6 @@ import argparse
 from platform import system
 
 import utils.operations as ops
-
-
-# Глобальные таски
-# ToDo Добавить функции, которые отвечают за установку и удаление программы
-# ToDo Логирование добавить везде, где нужно
-# ToDo Переименовать некоторые объекты, чтобы было понятней, operations, uip, arguments какая-то фигня имхо
 
 
 def main():
@@ -61,4 +56,8 @@ def main():
 if __name__ == '__main__':
     if system() != 'Windows':
         raise OSError("This operating system is not Windows. This program work only on Windows.")
+
+    if not ctypes.windll.shell32.IsUserAnAdmin():
+        exit("You are not administrator.")
+
     main()
