@@ -25,7 +25,7 @@ class InstallOperation(BaseOperation):
             return
 
         if arguments["agree"] is None:
-            answer = input(f"Do you want to install '{data["title"]}'? [Yes/no] ").lower()
+            answer = input(f"Do you want to install '{data['title']}'? [Yes/no] ").lower()
             arguments["agree"] = (answer in ("", "yes", "y"))
 
         if not arguments["agree"]:

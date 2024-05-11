@@ -9,7 +9,14 @@ def normalise_path(path: str, start_path=None):
     expanded_path = os.path.expandvars(path)
     if os.path.isabs(expanded_path):
         return expanded_path
-    return os.path.abspath(expanded_path)
+
+    if start_path is None:
+        return os.path.abspath(path)
+
+    if not os.path.isabs(start_path):
+        start_path = os.path.abspath(start_path)
+
+    return os.path.join(start_path, path)
 
 
 def unzip_archives(archives, destination):
@@ -32,7 +39,8 @@ def install_package(data):
 
     os.makedirs(tmp_directory_path, exist_ok=True)
 
-    unzip_result = unzip_archives(data["archives"], tmp_directory_path)
+    normalised_archives_paths = [normalise_path(i, script_file_dir_path) for i in data["archives"]]
+    unzip_result = unzip_archives(normalised_archives_paths, tmp_directory_path)
 
-    shutil.rmtree(tmp_directory_path, ignore_errors=True)
+    #shutil.rmtree(tmp_directory_path, ignore_errors=True)
     logger.info(f"Deleting temporary directory : {tmp_directory_path}")
