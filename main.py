@@ -21,7 +21,7 @@ def main():
                         choices=['debug', 'info', 'warning', 'error', 'critical'], default='info')
     operations_parser = parser.add_subparsers(title="Operations", dest="operation")
 
-    operations = (ops.InstallOperation(),)
+    operations = (ops.InstallOperation(), ops.RemoveOperation(),)
 
     for operation in operations:
         name, *aliases = operation.names

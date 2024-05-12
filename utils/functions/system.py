@@ -5,6 +5,7 @@ from typing import Union
 from loguru import logger
 from win32com.client import Dispatch
 
+
 def set_registry_value(address: str,
                        key: str,
                        value: str,
@@ -29,9 +30,38 @@ def set_registry_value(address: str,
         logger.error(f"An error occurred while setting the value in the registry: {e}")
 
 
+def delete_registry_key(key, subkey, subkeys = ''):
+    try:
+        if subkeys == "":
+            hkey = winreg.OpenKey(key, subkey, 0, winreg.KEY_ALL_ACCESS)
+            winreg.DeleteKey(hkey, subkeys)
+        else:
+            hkey = winreg.OpenKey(key, subkey, 0, winreg.KEY_ALL_ACCESS)
+            winreg.DeleteValue(hkey, subkeys)
+        winreg.CloseKey(hkey)
+        logger.info(f"Ключ {subkeys} успешно удален")
+    except FileNotFoundError:
+        logger.error(f"Ключ {subkeys} не найден")
+    except PermissionError:
+        logger.error(f"Нет разрешения на удаление ключа {subkey}")
+
+def delete_subkeys(key, subkey):
+    try:
+        hkey = winreg.OpenKey(key, subkey, 0, winreg.KEY_ALL_ACCESS)
+        i = 0
+        while True:
+            subkey_name = winreg.EnumKey(hkey, i)
+            full_key_path = f"{subkey}\\{subkey_name}"
+            delete_subkeys(key, full_key_path)
+            delete_registry_key(key, full_key_path)
+            i += 1
+    except WindowsError:
+        pass
+
+
 def create_shortcut(shortcut_name: str, target: str, destination_dir: str, arguments: str = ''):
     # Работает только с абсолютными адресами
-    # ToDo Добавить совместимость с относительными адересами
+    # ToDo Добавить совместимость с относительными адересами (возможно не актуально)
     if not shortcut_name.endswith(".lnk"):
         shortcut_name += ".lnk"
 
@@ -41,6 +71,7 @@ def create_shortcut(shortcut_name: str, target: str, destination_dir: str, argum
     shortcut.Arguments = arguments
     shortcut.WorkingDirectory = destination_dir
     shortcut.save()
+
 
 def unzip(archive_path, destination_path):
     logger.info(f"Starting unzip archive '{archive_path}' to '{destination_path}'.")
