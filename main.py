@@ -55,9 +55,11 @@ def main():
 
 if __name__ == '__main__':
     if system() != 'Windows':
-        raise OSError("This operating system is not Windows. This program work only on Windows.")
+        print("This operating system is not Windows. This program work only on Windows.")
+        sys.exit(1)
 
     if not ctypes.windll.shell32.IsUserAnAdmin():
-        exit("You are not administrator.")
+        print("You are not administrator.")
+        sys.exit(1)
 
     main()

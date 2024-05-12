@@ -11,4 +11,9 @@ env
 dev
 **/__pycache__
 
+# Файлы сборки
+/build
+/dist
+main.spec
+uifw.spec
 

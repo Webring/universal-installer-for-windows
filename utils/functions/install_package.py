@@ -43,21 +43,34 @@ def install_package(data):
     normalised_archives_paths = [normalise_path(i, script_file_dir_path) for i in data["archives"]]
     unzip_result = unzip_archives(normalised_archives_paths, tmp_directory_path)
 
+    if not unzip_result["success"]:
+        return False
+
     destination_absolute_path = normalise_path(data["dir"]["Dir"])
     desktop_path = get_desktop_path()
 
     for file, destination in data["files"]:
         file_source = os.path.join(tmp_directory_path, file)
         file_destination = os.path.join(destination_absolute_path, destination)
-        copy_tree(file_source, file_destination)
+        copying_success = copy_tree(file_source, file_destination)
+
+        if not copying_success:
+            return False
 
     for shortcut_name in data["icons"]:
         file_absolute_path = os.path.join(destination_absolute_path, shortcut_name)
-        create_shortcut(shortcut_name, file_absolute_path, desktop_path)
+        shortcut_creation_success = create_shortcut(shortcut_name, file_absolute_path, desktop_path)
+
+        if not shortcut_creation_success:
+            return False
 
     for address, values in data["registry"].items():
         for key, value in values.items():
-            set_registry_value(address, key, value)
+            set_success = set_registry_value(address, key, value)
+
+            if not set_success:
+                return False
 
     shutil.rmtree(tmp_directory_path, ignore_errors=True)
     logger.info(f"Deleting temporary directory : {tmp_directory_path}")
+    return True

@@ -34,4 +34,9 @@ class InstallOperation(BaseOperation):
 
         logger.info("Start installing package on your computer")
         data["path_to_package"] = os.path.abspath(package_path)
-        install_package(data)
+        installation_success = install_package(data)
+
+        if installation_success:
+            logger.success(f"Package '{data['title']}' successfully installed on your computer")
+        else:
+            logger.critical(f"Failed to install '{data['title']}' application")
