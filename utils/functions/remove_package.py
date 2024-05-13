@@ -4,7 +4,7 @@ import ctypes
 import sys
 import winreg
 
-from .system import delete_subkeys, delete_registry_key
+from .system import delete_subkeys, delete_registry_key, get_desktop_path
 from loguru import logger
 
 
@@ -37,8 +37,9 @@ def remove_package(data, is_force_removing):
         destination_absolute_path = normalise_path(data["dir"]["Dir"])
         shutil.rmtree(destination_absolute_path)
 
-        icon_absolute_path = normalise_path("%userprofile%\\Desktop\\" + data['icons'][0] + ".lnk")
-        os.remove(icon_absolute_path)
+        for icon_name in data['icons']:
+            icon_absolute_path = os.path.join(get_desktop_path(), icon_name + ".lnk")
+            os.remove(icon_absolute_path)
 
         registry_pathes = data["registry"]
         for key, values in registry_pathes.items():
@@ -68,8 +69,9 @@ def remove_package(data, is_force_removing):
         else:
             print("Directory is not empty")
 
-    icon_absolute_path = normalise_path("%userprofile%\\Desktop\\" + data['icons'][0] + ".lnk")
-    os.remove(icon_absolute_path)
+    for icon_name in data['icons']:
+        icon_absolute_path = os.path.join(get_desktop_path(), icon_name + ".lnk")
+        os.remove(icon_absolute_path)
 
     registry_pathes = data["registry"]
     for key, values in registry_pathes.items():
