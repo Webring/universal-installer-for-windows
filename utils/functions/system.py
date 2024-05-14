@@ -44,11 +44,11 @@ def delete_registry_key(key, subkey, subkeys=''):
             hkey = winreg.OpenKey(key, subkey, 0, winreg.KEY_ALL_ACCESS)
             winreg.DeleteValue(hkey, subkeys)
         winreg.CloseKey(hkey)
-        logger.info(f"Ключ {subkeys} успешно удален")
+        logger.info(f"Key '{subkey}' successfully removed")
     except FileNotFoundError:
-        logger.error(f"Ключ {subkeys} не найден")
+        logger.error(f"Key '{subkey}' not found")
     except PermissionError:
-        logger.error(f"Нет разрешения на удаление ключа {subkey}")
+        logger.error(f"Permission denied, you can't delete key '{subkey}'")
 
 
 def delete_subkeys(key, subkey):
@@ -65,9 +65,8 @@ def delete_subkeys(key, subkey):
         pass
 
 
-def create_shortcut(shortcut_name: str, target: str, destination_dir: str, arguments: str = ''):
+def create_shortcut(shortcut_name: str, target: str, destination_dir: str, arguments: str = '') -> bool:
     # Работает только с абсолютными адресами
-    # ToDo Добавить совместимость с относительными адересами
 
     if not os.path.exists(target):
         logger.critical(f"Target file '{target}' doesn't exist. Impossible to create shortcut.")
@@ -88,7 +87,6 @@ def unzip(archive_path, destination_path):
     logger.info(f"Starting unzip archive '{archive_path}' to '{destination_path}'.")
     # ToDo Пусть плюет варнингом в случае, если он перезаписывает файл. Может в этом процессе поможет zip_ref.namelist()
     with zipfile.ZipFile(archive_path, 'r') as zip_ref:
-        # logger.debug(zip_ref.namelist())
         zip_ref.extractall(destination_path)
     logger.info(f"Successfully unzip archive '{archive_path}' to '{destination_path}'.")
 
@@ -112,3 +110,17 @@ def copy_tree(source_path, destination_path) -> bool:
 def get_desktop_path() -> str:
     shell = Dispatch('WScript.Shell')
     return shell.SpecialFolders("Desktop")
+
+
+def normalise_path(path: str, start_path=None):
+    expanded_path = os.path.expandvars(path)
+    if os.path.isabs(expanded_path):
+        return expanded_path
+
+    if start_path is None:
+        return os.path.abspath(path)
+
+    if not os.path.isabs(start_path):
+        start_path = os.path.abspath(start_path)
+
+    return os.path.join(start_path, path)

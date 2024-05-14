@@ -3,21 +3,7 @@ import shutil
 
 from loguru import logger
 
-from .system import unzip, copy_tree, get_desktop_path, create_shortcut, set_registry_value
-
-
-def normalise_path(path: str, start_path=None):
-    expanded_path = os.path.expandvars(path)
-    if os.path.isabs(expanded_path):
-        return expanded_path
-
-    if start_path is None:
-        return os.path.abspath(path)
-
-    if not os.path.isabs(start_path):
-        start_path = os.path.abspath(start_path)
-
-    return os.path.join(start_path, path)
+from .system import unzip, copy_tree, get_desktop_path, create_shortcut, set_registry_value, normalise_path
 
 
 def unzip_archives(archives, destination):
