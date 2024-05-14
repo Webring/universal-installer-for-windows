@@ -44,9 +44,9 @@ def delete_registry_key(key, subkey, subkeys=''):
             hkey = winreg.OpenKey(key, subkey, 0, winreg.KEY_ALL_ACCESS)
             winreg.DeleteValue(hkey, subkeys)
         winreg.CloseKey(hkey)
-        logger.info(f"Key '{subkey}' successfully removed")
+        logger.info(f"Key '{subkey + "\\" + subkeys}' successfully removed")
     except FileNotFoundError:
-        logger.error(f"Key '{subkey}' not found")
+        logger.error(f"Key '{subkey + "\\" + subkeys}' not found")
     except PermissionError:
         logger.error(f"Permission denied, you can't delete key '{subkey}'")
 
