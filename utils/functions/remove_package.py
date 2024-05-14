@@ -1,7 +1,6 @@
 import os
 import shutil
 import ctypes
-import sys
 import winreg
 
 from .system import delete_subkeys, delete_registry_key, get_desktop_path
@@ -30,7 +29,7 @@ def is_admin():
 
 
 def remove_package(data, is_force_removing):
-    if is_force_removing == None:
+    if is_force_removing is None:
         logger.info("Wrong way of removing has been selected")
         return
     if is_force_removing:
